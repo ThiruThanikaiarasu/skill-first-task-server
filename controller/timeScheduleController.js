@@ -2,6 +2,7 @@ const timeScheduleModel = require('../models/timeScheduleModel')
 
 const addNewTime = async (request, response) => {
     const { timeZone, startDate, endDate } = request.body
+    console.log(request.body)
     try{
         const newTime = new timeScheduleModel({
             timeZone,
@@ -12,6 +13,7 @@ const addNewTime = async (request, response) => {
         response.status(201).send({ message: "Added successfully"})
     }
     catch(error) {
+        console.log("error")
         response.status(500).send(error)
     }
 
@@ -19,13 +21,11 @@ const addNewTime = async (request, response) => {
 
 const getLastSchedule = async (request, response) => {
     try{
-        console.log("hello")
         const lastTimeScheduled = await timeScheduleModel.aggregate([
             { $sort: { createdAt: -1 } },
             { $limit: 1 }
         ])
-        console.log(lastTimeScheduled)
-        response.status(200).send({ message: "Data sent.", })
+        response.status(200).send({ message: "Data sent.", data: lastTimeScheduled})
     }
     catch(error){
         response.status(500).send(error)
